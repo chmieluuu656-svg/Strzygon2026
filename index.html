@@ -1,40 +1,149 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Strzygon.net</title>
-  <style>
-    :root{font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
-    html,body{height:100%;margin:0;background:#0f1115;color:#fff}
-    .hero{height:100vh;display:flex;align-items:center;justify-content:center}
-    h1{font-size:clamp(28px,8vw,96px);letter-spacing:0.02em;margin:0}
-    .spacer{height:60vh}
-    footer{padding:40px 20px;text-align:center;font-size:14px;color:rgba(255,255,255,0.7)}
-    h1{opacity:0;transform:translateY(8px);transition:opacity .6s ease, transform .6s ease}
-    .hero.loaded h1{opacity:1;transform:none}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odkryj sekret</title>
+
+    <style>
+        body {
+            background: #111;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 40px 15px;
+        }
+
+        input, button {
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 6px;
+            margin: 5px;
+        }
+
+        input {
+            width: 220px;
+            max-width: 70%;
+        }
+
+        button {
+            background: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #555;
+        }
+
+        #wynik {
+            margin: 30px auto;
+            max-width: 800px;
+        }
+
+        #obrazek {
+            display: none;
+            max-width: 100%;
+            max-height: 500px;
+            margin: 15px auto;
+            border-radius: 8px;
+        }
+
+        #napis {
+            font-size: 22px;
+            margin-top: 20px;
+            overflow-wrap: anywhere;
+        }
+    </style>
 </head>
+
 <body>
 
-  <main>
-    <section class="hero" id="hero">
-      <h1>nie tym razem</h1>
-      <span style="opacity:0;">Pora na zakupy</span>
-    </section>
+    <h1>Witam!</h1>
 
-    <div class="spacer"></div>
+    <p>Wpisz słowo:</p>
 
-    <footer>
-      <small>szukaj u źródła</small>
-    </footer>
-  </main>
+    <input type="text" id="haslo" placeholder="Wpisz słowo...">
+    <button onclick="sprawdzHaslo()">Sprawdź</button>
 
-  <script>
-    // Lekki efekt wejścia
-    window.addEventListener('DOMContentLoaded',()=>{
-      document.getElementById('hero').classList.add('loaded');
-    });
-  </script>
+    <div id="wynik">
+        <img id="obrazek" src="" alt="Odkryty obrazek">
+        <p id="napis"></p>
+    </div>
+
+    <script>
+        // Słowa kluczowe, obrazki i napisy
+        const odpowiedzi = {
+            "smok": {
+                obraz: "smok.jpg",
+                tekst: "Oto potężny smok!"
+            },
+
+            "zamek": {
+                obraz: "zamek.jpg",
+                tekst: "Tajemnica zamku została odkryta."
+            },
+
+            "tajemnica": {
+                obraz: "tajemnica.jpg",
+                tekst: "Szukaj dalej..."
+            },
+
+            "zwyciestwo": {
+                obraz: "wygrana.jpg",
+                tekst: "Gratulacje! Udało Ci się wygrać!"
+            }
+        };
+
+        function sprawdzHaslo() {
+            const haslo = document.getElementById("haslo")
+                .value.trim().toLowerCase();
+
+            const obrazek = document.getElementById("obrazek");
+            const napis = document.getElementById("napis");
+
+            if (odpowiedzi[haslo]) {
+                const wynik = odpowiedzi[haslo];
+
+                napis.textContent = wynik.tekst;
+
+                if (wynik.obraz) {
+                    obrazek.onerror = function() {
+                        obrazek.style.display = "none";
+                    };
+
+                    obrazek.onload = function() {
+                        obrazek.style.display = "block";
+                    };
+
+                    obrazek.style.display = "none";
+                    obrazek.src = wynik.obraz;
+                } else {
+                    obrazek.style.display = "none";
+                    obrazek.removeAttribute("src");
+                }
+
+            } else {
+                // Nieznane słowo: sam napis, bez obrazka
+                obrazek.style.display = "none";
+                obrazek.removeAttribute("src");
+
+                napis.textContent =
+                    "Nie znaleziono pasującego obrazka. Spróbuj innego słowa.";
+            }
+        }
+
+        document.getElementById("haslo").addEventListener(
+            "keydown",
+            function(event) {
+                if (event.key === "Enter") {
+                    sprawdzHaslo();
+                }
+            }
+        );
+    </script>
+
 </body>
 </html>
